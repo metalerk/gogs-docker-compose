@@ -1,0 +1,46 @@
+version: '3'
+services:
+  db:
+    image: bitnami/postgresql:9.6
+    ports:
+      - 5432
+    environment:
+      - POSTGRESQL_USERNAME=${POSTGRES_USER:-gogs}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-gogs}
+      - PGPASSWORD=${POSTGRES_PASSWORD:-gogs}
+      - POSTGRESQL_DATABASE=${POSTGRES_DATABASE:-gogs}
+
+    networks:
+      - gogs-network
+ 
+  gogs:
+    restart: unless-stopped
+    image: gogs/gogs
+    volumes:
+      - /var/gogs:/data
+    ports:
+      - "10022:22"
+      - "3000:3000"
+    networks:
+      - gogs-network
+    depends_on:
+      - db
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-name@example.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-gogs}
+      - PGADMIN_LISTEN_PORT=5050
+      - GUNICORN_THREADS=2
+    ports:
+      - ${PGADMIN_PORT:-5050}:5050
+    networks:
+      - gogs-network
+    depends_on:
+      - db
+
+networks:
+  gogs-network:
