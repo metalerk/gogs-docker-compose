@@ -1,48 +1,37 @@
-version: '3'
+version: "3"
+
 services:
   db:
-    image: bitnami/postgresql:9.6
+    image: tobi312/rpi-postgresql
     ports:
       - 5432
     environment:
-      - POSTGRESQL_USERNAME=${POSTGRES_USER:-gitea}
-      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-gitea}
-      - PGPASSWORD=${POSTGRES_PASSWORD:-gitea}
-      - POSTGRESQL_DATABASE=${POSTGRES_DATABASE:-gitea}
+      - POSTGRES_USER=${POSTGRES_USER:-gitea}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gitea}
+      - POSTGRES_DB=${POSTGRES_DB:-gitea}
 
     networks:
       - gitea-network
  
   gitea:
-    restart: unless-stopped
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.rpi
+    restart: always
+    networks:
+      - gitea
     volumes:
-      - /var/gitea:/data
+      - gitea:/data
     ports:
-      - "10022:22"
       - "3000:3000"
-    networks:
-      - gitea-network
-    depends_on:
-      - db
-  
-  pgadmin:
-    image: dpage/pgadmin4
-    depends_on:
-      - db
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-name@example.com}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-gitea}
-      - PGADMIN_LISTEN_PORT=5050
-      - GUNICORN_THREADS=2
-    ports:
-      - ${PGADMIN_PORT:-5050}:5050
-    networks:
-      - gitea-network
+      - "2222:22"
     depends_on:
       - db
 
 networks:
   gitea-network:
+
+volumes:
+  gitea:
+    driver: local
+
