@@ -14,9 +14,7 @@ services:
  
   gogs:
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile.rpi
+    image: gogs/gogs-rpi
     volumes:
       - /var/gogs:/data
     ports:
