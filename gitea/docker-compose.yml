@@ -5,26 +5,26 @@ services:
     ports:
       - 5432
     environment:
-      - POSTGRESQL_USERNAME=${POSTGRES_USER:-gogs}
-      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-gogs}
-      - PGPASSWORD=${POSTGRES_PASSWORD:-gogs}
-      - POSTGRESQL_DATABASE=${POSTGRES_DATABASE:-gogs}
+      - POSTGRESQL_USERNAME=${POSTGRES_USER:-gitea}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD:-gitea}
+      - PGPASSWORD=${POSTGRES_PASSWORD:-gitea}
+      - POSTGRESQL_DATABASE=${POSTGRES_DATABASE:-gitea}
 
     networks:
-      - gogs-network
+      - gitea-network
  
-  gogs:
+  gitea:
     restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - /var/gogs:/data
+      - /var/gitea:/data
     ports:
       - "10022:22"
       - "3000:3000"
     networks:
-      - gogs-network
+      - gitea-network
     depends_on:
       - db
   
@@ -34,15 +34,15 @@ services:
       - db
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-name@example.com}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-gogs}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-gitea}
       - PGADMIN_LISTEN_PORT=5050
       - GUNICORN_THREADS=2
     ports:
       - ${PGADMIN_PORT:-5050}:5050
     networks:
-      - gogs-network
+      - gitea-network
     depends_on:
       - db
 
 networks:
-  gogs-network:
+  gitea-network:
