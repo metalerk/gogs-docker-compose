@@ -1,4 +1,5 @@
-version: '3'
+version: "3"
+
 services:
   db:
     image: tobi312/rpi-postgresql
@@ -13,17 +14,22 @@ services:
       - gogs-network
  
   gogs:
-    restart: unless-stopped
     image: gogs/gogs-rpi
+    restart: always
+    networks:
+      - gogs-network
     volumes:
       - /var/gogs:/data
     ports:
-      - "10022:22"
       - "3000:3000"
-    networks:
-      - gogs-network
+      - "2222:22"
     depends_on:
       - db
 
 networks:
   gogs-network:
+
+volumes:
+  gogs:
+    driver: local
+
