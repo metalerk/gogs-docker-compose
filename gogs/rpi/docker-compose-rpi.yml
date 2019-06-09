@@ -22,10 +22,8 @@ services:
       - /var/gogs:/data
     ports:
       - "3000:3000"
-      - "2222:22"
-    depends_on:
-      - db
-
+      - "10022:22"
+ 
 networks:
   gogs-network:
 
