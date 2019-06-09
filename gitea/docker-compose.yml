@@ -14,9 +14,7 @@ services:
       - gitea-network
  
   gitea:
-    build:
-      context: .
-      dockerfile: Dockerfile.rpi
+    image: kapdap/gitea-rpi
     restart: always
     networks:
       - gitea-network
