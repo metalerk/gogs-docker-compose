@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile.rpi
     restart: always
     networks:
-      - gitea
+      - gitea-network
     volumes:
       - gitea:/data
     ports:
